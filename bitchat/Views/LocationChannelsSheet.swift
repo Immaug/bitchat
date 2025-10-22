@@ -125,9 +125,6 @@ struct LocationChannelsSheet: View {
             .navigationTitle("")
             #endif
         }
-        #if os(iOS)
-        .presentationDetents([.large])
-        #endif
         #if os(macOS)
         .frame(minWidth: 420, minHeight: 520)
         #endif
@@ -443,7 +440,7 @@ struct LocationChannelsSheet: View {
         // Count mesh-connected OR mesh-reachable peers (exclude self)
         let myID = viewModel.meshService.myPeerID
         return viewModel.allPeers.reduce(0) { acc, peer in
-            if peer.id != myID && (peer.isConnected || peer.isReachable) { return acc + 1 }
+            if peer.peerID != myID && (peer.isConnected || peer.isReachable) { return acc + 1 }
             return acc
         }
     }
@@ -599,7 +596,7 @@ extension LocationChannelsSheet {
         switch level {
         case .region:
             return ""
-        default:
+        case .building, .block, .neighborhood, .city, .province:
             return "~"
         }
     }

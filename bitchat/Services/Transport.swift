@@ -4,7 +4,7 @@ import Combine
 /// Abstract transport interface used by ChatViewModel and services.
 /// BLEService implements this protocol; a future Nostr transport can too.
 struct TransportPeerSnapshot: Equatable, Hashable {
-    let id: String
+    let peerID: PeerID
     let nickname: String
     let isConnected: Bool
     let noisePublicKey: Data?
@@ -50,6 +50,9 @@ protocol Transport: AnyObject {
     func sendFavoriteNotification(to peerID: PeerID, isFavorite: Bool)
     func sendBroadcastAnnounce()
     func sendDeliveryAck(for messageID: String, to peerID: PeerID)
+    func sendFileBroadcast(_ packet: BitchatFilePacket, transferId: String)
+    func sendFilePrivate(_ packet: BitchatFilePacket, to peerID: PeerID, transferId: String)
+    func cancelTransfer(_ transferId: String)
 
     // QR verification (optional for transports)
     func sendVerifyChallenge(to peerID: PeerID, noiseKeyHex: String, nonceA: Data)
@@ -59,6 +62,9 @@ protocol Transport: AnyObject {
 extension Transport {
     func sendVerifyChallenge(to peerID: PeerID, noiseKeyHex: String, nonceA: Data) {}
     func sendVerifyResponse(to peerID: PeerID, noiseKeyHex: String, nonceA: Data) {}
+    func sendFileBroadcast(_ packet: BitchatFilePacket, transferId: String) {}
+    func sendFilePrivate(_ packet: BitchatFilePacket, to peerID: PeerID, transferId: String) {}
+    func cancelTransfer(_ transferId: String) {}
 }
 
 protocol TransportPeerEventsDelegate: AnyObject {

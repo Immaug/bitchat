@@ -78,9 +78,6 @@ struct LocationNotesView: View {
             .navigationTitle("")
             #endif
         }
-       #if os(iOS)
-        .presentationDetents([.large])
-        #endif
         .background(backgroundColor)
         .onDisappear { manager.cancel() }
         .onChange(of: geohash) { newValue in
@@ -125,11 +122,7 @@ struct LocationNotesView: View {
                 .font(.bitchatSystem(size: 12, design: .monospaced))
                 .foregroundColor(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
-            if manager.state == .loading && !manager.initialLoadComplete {
-                Text(Strings.loadingRecent)
-                    .font(.bitchatSystem(size: 11, design: .monospaced))
-                    .foregroundColor(.secondary)
-            } else if manager.state == .noRelays {
+            if manager.state == .noRelays {
                 Text(Strings.relaysPaused)
                     .font(.bitchatSystem(size: 11, design: .monospaced))
                     .foregroundColor(.secondary)
@@ -145,7 +138,7 @@ struct LocationNotesView: View {
         String(
             format: String(localized: "location_notes.header", comment: "Header displaying the geohash and localized note count"),
             locale: .current,
-            geohash, count
+            "\(geohash) ± 1", count
         )
     }
 
